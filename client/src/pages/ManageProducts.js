@@ -134,7 +134,7 @@ const ProductUpdateModal = ({ product, onSubmit, onClose }) => {
     fetchCategories();
   }, []);
 
-  const url = "http://localhost:5000";
+  const url = "https://fenty-wear.onrender.com";
 
   const fetchCategories = async () => {
     try {
