@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from datetime import datetime
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -21,12 +22,23 @@ class SerializerMixin:
 
         return {**columns, **relationships}
 
+class Category(db.Model, SerializerMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    products = db.relationship('Product', backref='category', lazy=True)
+
+    def serialize(self):
+        serialized = super().serialize()
+        serialized['products'] = [product.serialize() for product in self.products]
+        return serialized
+
 class User(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     phone = db.Column(db.String(15), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
+    role = db.Column(db.String(50), default='Registered')  # Possible values: 'Registered', 'Admin'
     cart = db.relationship('Cart', back_populates='user_association', uselist=False)
 
     def serialize(self):
@@ -40,7 +52,8 @@ class Product(db.Model, SerializerMixin):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     price = db.Column(db.Float, nullable=False)
-    image_url = db.Column(db.String(255), nullable=True)  
+    image_url = db.Column(db.String(255), nullable=True)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)  # Add this line
 
 class Cart(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -52,10 +65,12 @@ class Cart(db.Model, SerializerMixin):
         serialized = super().serialize()
         serialized['products'] = [product.serialize() for product in self.products]
         return serialized
-    def __init__(self, user_id=None, products=None):
-        self.user_id = user_id
-        self.products = products if products is not None else []
-
+    
+#   For Logout JWT Block List
+class TokenBlocklist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    jti =  db.Column(db.String(100),nullable=True)
+    created_at = db.Column(db.DateTime(), default=datetime.utcnow)
 
 # Association table for Cart and Product many-to-many relationship
 cart_product = db.Table('cart_product',
