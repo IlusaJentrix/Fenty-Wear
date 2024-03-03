@@ -47,7 +47,7 @@ def register():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify(message='User created successfully'), 201
+    return jsonify(success='User created successfully'), 201
 
 
 
@@ -69,8 +69,16 @@ def login():
 @app.route('/products', methods=['GET'])
 def get_products():
     products = Product.query.all()
-    product_list = [{'id': product.id, 'name': product.name, 'description': product.description, 'price': product.price, 'image_url': product.image_url, 'category_id': product.category_id} for product in products]
+    product_list = [{'id': product.id, 'name': product.name, 'description': product.description, 'price': product.price, 'image_url': product.image_url, 'category_id': product.category_id, 'quantity': product.quantity} for product in products]
     return jsonify(products=product_list)
+
+# Endpoint to fetch all categories
+@app.route('/categories', methods=['GET'])
+def get_all_categories():
+    categories = Category.query.all()
+    category_data = [{'id': category.id, 'name': category.name} for category in categories]
+
+    return jsonify(categories=category_data), 200
 
 @app.route('/products_by_category/<int:category_id>', methods=['GET'])
 def get_products_by_category(category_id):
@@ -90,6 +98,7 @@ def get_products_by_category(category_id):
         'description': product.description,
         'price': product.price,
         'image_url': product.image_url,
+        'quantity': product.quantity
     } for product in products]
 
     return jsonify(products=product_list), 200
@@ -103,10 +112,14 @@ def get_user_by_id(user_id):
     else:
         return jsonify(message='User not found'), 404
 
-@app.route('/user/<int:user_id>', methods=['PUT'])
+@app.route('/user/update', methods=['PUT'])
 @jwt_required()
-def update_user(user_id):
-    user = User.query.get(user_id)
+def update_user():
+    # Access the identity of the current user with get_jwt_identity
+    current_username = get_jwt_identity()
+
+    # Query the database to get the user based on the username
+    user = User.query.filter_by(username=current_username).first()
     if user:
         data = request.get_json()
         user.username = data.get('username', user.username)
@@ -117,14 +130,21 @@ def update_user(user_id):
     else:
         return jsonify(message='User not found'), 404
 
-@app.route('/user/<int:user_id>', methods=['DELETE'])
+@app.route('/user/delete', methods=['DELETE'])
 @jwt_required()
-def delete_user(user_id):
-    user = User.query.get(user_id)
+def delete_user():
+    # Access the identity of the current user with get_jwt_identity
+    current_username = get_jwt_identity()
+
+    # Query the database to get the user based on the username
+    user = User.query.filter_by(username=current_username).first()
     if user:
-        db.session.delete(user)
-        db.session.commit()
-        return jsonify(message='User deleted successfully'), 200
+        # Assuming you have a relationship between User and Cart
+        if user.cart:
+            db.session.delete(user.cart)  # Delete associated cart
+            db.session.delete(user)
+            db.session.commit()
+            return jsonify(message='User deleted successfully'), 200
     else:
         return jsonify(message='User not found'), 404
 
@@ -150,6 +170,7 @@ def add_product():
         description=data.get('description', ''),
         price=data['price'],
         image_url=data.get('image_url', ''),
+        quantity=data.get('quantity', 1),
         category_id=data['category_id'],
     )
 
@@ -165,7 +186,7 @@ def add_product():
     db.session.add(new_product)
     db.session.commit()
 
-    return jsonify(message='Product added successfully'), 201
+    return jsonify(success='Product added successfully'), 201
 
 
 # Protected route to update a product
@@ -192,6 +213,7 @@ def update_product(product_id):
     product.price = data.get('price', product.price)
     product.image_url = data.get('image_url', product.image_url)
     product.category_id = data.get('category_id', product.category_id)
+    product.quantity = data.get('quantity', product.quantity)
 
     if product.category_id:
         category = Category.query.get(product.category_id)
@@ -200,7 +222,7 @@ def update_product(product_id):
 
     db.session.commit()
 
-    return jsonify(message='Product updated successfully'), 200
+    return jsonify(success='Product updated successfully'), 200
 
 
 # Protected route to delete a product
@@ -304,7 +326,7 @@ def get_cart_items():
         return jsonify(message='User not found'), 404
 
     cart_items = current_user.cart.products
-    items_list = [{'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price, 'image_url': item.image_url} for item in cart_items]
+    items_list = [{'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price, 'image_url': item.image_url, 'quantity': item.quantity} for item in cart_items]
 
     return jsonify(cart_items=items_list)
 # Example route for fetching all users (Admin only)
@@ -323,7 +345,7 @@ def get_all_users():
         all_users = User.query.all()
 
         # Serialize the user data
-        users_data = [{'id': user.id, 'username': user.username, 'email': user.email, 'role': user.role} for user in all_users]
+        users_data = [{'id': user.id, 'username': user.username, 'email': user.email, 'phone': user.phone, 'role': user.role} for user in all_users]
 
         return jsonify(users=users_data), 200
     else:
@@ -343,6 +365,9 @@ def delete_user_by_id(user_id):
     if current_user and current_user.role == 'Admin':
         user = User.query.get(user_id)
         if user:
+            # Assuming you have a relationship between User and Cart
+            if user.cart:
+                db.session.delete(user.cart)  # Delete associated cart
             db.session.delete(user)
             db.session.commit()
             return jsonify(message='User deleted successfully'), 200
@@ -362,6 +387,7 @@ def authenticated_user():
             'id': user.id,
             'username':user.username,
             'email': user.email,
+            'phone': user.phone,
             'role': user.role
         }
         return jsonify(user_data), 200

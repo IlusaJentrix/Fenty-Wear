@@ -53,6 +53,7 @@ class Product(db.Model, SerializerMixin):
     description = db.Column(db.Text, nullable=True)
     price = db.Column(db.Float, nullable=False)
     image_url = db.Column(db.String(255), nullable=True)
+    quantity = db.Column(db.Integer, nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)  # Add this line
 
 class Cart(db.Model, SerializerMixin):
