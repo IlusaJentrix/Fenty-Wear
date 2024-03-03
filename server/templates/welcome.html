@@ -1,0 +1,87 @@
+<!-- templates/welcome.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Welcome to Beauty Store</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="jumbotron text-center">
+            <h1 class="display-4">Welcome to Beauty Store API</h1>
+            <p class="lead">This is a place to discover and shop for beauty products.</p>
+            <hr class="my-4">
+            <p>Explore our products and enjoy a delightful shopping experience!</p>
+
+            <!-- Bootstrap Table for API Routes -->
+            <div class="table-responsive mt-5">
+                <h3>Available API Routes</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Route</th>
+                            <th>Method</th>
+                            <th>JWT Required</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>/register</td>
+                            <td>POST</td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td>/login</td>
+                            <td>POST</td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td>/products</td>
+                            <td>GET</td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td>/user/&lt;int:user_id&gt;</td>
+                            <td>GET</td>
+                            <td>Yes</td>
+                        </tr>
+                        <tr>
+                            <td>/user/&lt;int:user_id&gt;</td>
+                            <td>PUT</td>
+                            <td>Yes</td>
+                        </tr>
+                        <tr>
+                            <td>/user/&lt;int:user_id&gt;</td>
+                            <td>DELETE</td>
+                            <td>Yes</td>
+                        </tr>
+                        <tr>
+                            <td>/add_to_cart/&lt;int:product_id&gt;</td>
+                            <td>POST</td>
+                            <td>Yes</td>
+                        </tr>
+                        <tr>
+                            <td>/remove_from_cart/&lt;int:product_id&gt;</td>
+                            <td>POST</td>
+                            <td>Yes</td>
+                        </tr>
+                        <tr>
+                            <td>/cart/items</td>
+                            <td>GET</td>
+                            <td>Yes</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
