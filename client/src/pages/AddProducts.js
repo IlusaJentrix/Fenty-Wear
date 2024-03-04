@@ -22,7 +22,7 @@ export default function AddProducts() {
     fetchCategories();
   }, []);
 
-  const url = "https://fenty-wear.onrender.com";
+  const url = "https://fenty-wear-ya5g.onrender.com";
 
   const fetchCategories = async () => {
     try {
@@ -48,7 +48,7 @@ export default function AddProducts() {
   };
 
   function addProduct(productData) {
-    const url = "https://fenty-wear.onrender.com";
+    const url = "https://fenty-wear-ya5g.onrender.com";
 
     fetch(`${url}/products/add`, {
       method: "POST",

@@ -7,7 +7,7 @@ from models import db, User, Product, bcrypt, Cart, Category, TokenBlocklist
 from datetime import timedelta
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://fenty_wear_user:r6nzJyhnaCI7e77z7sUNbAde5UdOolW5@dpg-cnifdh6n7f5s73cnscr0-a.oregon-postgres.render.com/fenty_wear'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://fenty_wear_o6s5_user:8ikbbmTds7WWkMvhzNInQSFQ5WzmJlig@dpg-cnim585jm4es738o0840-a.oregon-postgres.render.com/fenty_wear_o6s5'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'a120f689-b263-4d4a-b853-9e463e2904fb'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=3)

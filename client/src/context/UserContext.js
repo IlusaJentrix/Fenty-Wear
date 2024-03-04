@@ -11,7 +11,7 @@ export default function UserProvider({ children }) {
   );
   const [currentUser, setCurrentUser] = useState(null);
   const [allUsers, setAllUsers] = useState([]);
-  const url = "https://fenty-wear.onrender.com";
+  const url = "https://fenty-wear-ya5g.onrender.com";
   const navigate = useNavigate();
 
   // add user

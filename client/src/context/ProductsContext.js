@@ -13,7 +13,7 @@ const ProductsProvider = ({ children }) => {
   const [onchange, setOnchange] = useState(false);
 
   const { authToken } = useContext(UserContext);
-  const url = "https://fenty-wear.onrender.com";
+  const url = "https://fenty-wear-ya5g.onrender.com";
 
   useEffect(() => {
     const getProducts = async () => {
